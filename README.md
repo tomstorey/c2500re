@@ -58,8 +58,10 @@ Boot ROMs are located at address 0x01000000.
 
 8Mbit ROMs are particularly interesting in a PLCC32 package. What would normally be the Write Enable pin is replaced with an additional address line. To use smaller sized ROMs in these sockets, two jumpers must be modified to map this signal correctly. Beside the FW2 socket are two 3 pin headers which can be used to configure the function of pin 31:
 
-  * bridging the AB positions configures the sockets for 8Mbit ROMs
-  * bridging the A position with the unlabelled position configures the sockets for smaller sized ROMs
+  * bridging the AB positions configures the sockets for 8Mbit ROMs - pin 31 is low in this configuration, which would assert the Write Enable pin of a smaller sized ROM
+  * bridging the A position with the unlabelled position configures the sockets for smaller sized ROMs - pin 31 will be high in this configuration
+
+<img src="images/rom-jumpers.png">
 
 No manufacturer part number is indicated on the packages, just a Cisco part number and software version, so determining the exact pinout is not necessarily possible, but a similar part from ST (M27C801) indicates there may be some pin incompatibilities between 8Mbit ROMs and smaller sizes. Specifically, the arrangement of address lines on pins 1 and 31 varies slightly between 8Mbit ROMs and the 4Mbit ROMs I have been using for testing (SST39SF040):
 
@@ -658,3 +660,12 @@ _start:
 
     jmp     main
 ```
+
+## Other
+
+### Reset Button Modification
+The hardware as supplied doesnt include a reset button. When testing your own code it is much simpler to hit a reset button to start over rather than switching the power supply on and off.
+
+Other than a perhaps inadvertant software method of causing a reboot (see Other Registers), a hardware reset button can be easily integrated using a conveniently unpopulated footprint for an oscillator (on the 2501 at least, other models featuring ISDN may have this oscillator populated).
+
+<img src="images/reset-button.png">
