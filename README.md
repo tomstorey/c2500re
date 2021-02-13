@@ -669,3 +669,6 @@ The hardware as supplied doesnt include a reset button. When testing your own co
 Other than a perhaps inadvertant software method of causing a reboot (see Other Registers), a hardware reset button can be easily integrated using a conveniently unpopulated footprint for an oscillator (on the 2501 at least, other models featuring ISDN may have this oscillator populated).
 
 <img src="images/reset-button.png">
+
+### FreeRTOS
+I have succeeded in getting FreeRTOS to run, and you can find a fork with my Motorola 68k port included here: [https://github.com/tomstorey/FreeRTOS-Kernel](https://github.com/tomstorey/FreeRTOS-Kernel)
