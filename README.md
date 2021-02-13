@@ -33,10 +33,10 @@ I use the following conventions in my documentation:
 
 * A forward slash (/) after a signal name indicates that the signal is active low, or negative logic
 * In register bit tables:
-  * R indicates that a register is readable
-  * W indicates that a register is writable, and will read back the same value written
-  * w indicates that a register is writable, but the value read back may not represent what was written, or the register is write-once
-  * -0 indicates the bit reads as 0 on reset, and -1 reads as a 1. -? means the bit value is indeterminate on reset (e.g. influenced externally).
+* R indicates that a register is readable
+* W indicates that a register is writable, and will read back the same value written
+* w indicates that a register is writable, but the value read back may not represent what was written, or the register is write-once
+* -0 indicates the bit reads as 0 on reset, and -1 reads as a 1. -? means the bit value is indeterminate on reset (e.g. influenced externally).
 
 ### Block Diagram
 Ive roughly figured out how everything interconnects, and produced a [block diagram](block.pdf). It is not complete, missing some of the finer details like chip selects, read/write, clock, reset, and other signals. Use it as a guide only at this stage, I may get around to filling in the rest of the details over time.
@@ -63,8 +63,8 @@ Boot ROMs are located at address 0x01000000.
 
 8Mbit ROMs are particularly interesting in a PLCC32 package. What would normally be the Write Enable pin is replaced with an additional address line. To use smaller sized ROMs in these sockets, two jumpers must be modified to map this signal correctly. Beside the FW2 socket are two 3 pin headers which can be used to configure the function of pin 31:
 
-  * bridging the AB positions configures the sockets for 8Mbit ROMs - pin 31 is low in this configuration, which would assert the Write Enable pin of a smaller sized ROM
-  * bridging the A position with the unlabelled position configures the sockets for smaller sized ROMs - pin 31 will be high in this configuration
+* bridging the AB positions configures the sockets for 8Mbit ROMs - pin 31 is low in this configuration, which would assert the Write Enable pin of a smaller sized ROM
+* bridging the A position with the unlabelled position configures the sockets for smaller sized ROMs - pin 31 will be high in this configuration
 
 <img src="images/rom-jumpers.png">
 
@@ -97,7 +97,7 @@ Given these apparent differences, I can foresee a couple of different scenarios 
 * ROM image may need to be limited to 1Mbit (128K) per ROM, or 2Mbit (256K) total
 * figure out how to store code in flash, and use the ROM sockets only for bootloading
 
-*See Memory Configuration Register section for details about configuring the valid address window for the boot ROM sockets.*
+*See [Memory Configuration Register](#memory-configuration-register) section for details about configuring the valid address window for the boot ROM sockets.*
 
 ### NVRAM
 NVRAM is a 32Kbyte EEPROM, part number X28HC256J, which holds the routers configuration register (ala 0x2102) and configuration (startup-config).
@@ -119,7 +119,7 @@ Although the boot ROMs are seemingly mapped to address 0 while the CPU reads the
 
 Presence detect pins of the DRAM socket do not seem to be routed to either of the Cisco branded chips. A software memory sizing routine is implemented to find the size of available DRAM.
 
-*See Memory Configuration Register section for details about configuring the valid address window for the DRAM.*
+*See [Memory Configuration Register](#memory-configuration-register) section for details about configuring the valid address window for the DRAM.*
 
 ### Flash
 Two 80 pin SIMM sockets provide for 8Mbyte of flash each, totalling 16Mbyte of persistent storage.
@@ -360,7 +360,7 @@ The input clock frequency to the HD64570 is 10MHz, and this is divided by 8 inte
 
 The datasheet contains extensive notes and details about the configuration and operation of these timers.
 
-*See Peripheral Access Register section for steps required to be able to access the HD64570.*
+*See [Peripheral Access Register](#peripheral-access-register) section for steps required to be able to access the HD64570.*
 
 ### NOVRAM
 There is a X24C44 256bit, non-volatile SRAM located on the board.
@@ -419,7 +419,7 @@ Bit 0: DI: Data In<br>
 TODO, but seems to be located at address 0x2130000.
 
 ### GPIO
-Since this system was designed for a specific purpose, beyond an LED which is controllable by writing to a register (see System Control Register) there is no other GPIO capability built in.
+Since this system was designed for a specific purpose, beyond an LED which is controllable by writing to a register (see [System Control Register](#system-control-register)) there is no other GPIO capability built in.
 
 Having said that, I have an idea that it may be possible to design an small PCB to break out parts of the address and data busses via one of the flash sockets. This would provide an ability to read and write some latches or other simple peripherals. However, given that this is a memory socket, no access to other bus signals is possible, and it would not be possible to provide interrupts, so usefulness is limited to simple IO.
 
@@ -630,7 +630,7 @@ There are potentially some other registers which were readable and others writab
 * 0x02110016: 0000 (writable)
 * 0x02110018: 0000 (writable, mask FF01)
 
-Having said that, writing word 0xFFFF to both 0x02110016 and 0x02110018 will cause a reset (CPU reset pin is asserted, so not a crash).
+Writing word 0xFFFF to both 0x02110016 and 0x02110018 will cause a reset (CPU reset pin is asserted, so not a crash).
 
 ### Minimal Startup Code
 The following represents the minimal code to get the system configured and able to function.
@@ -671,7 +671,7 @@ _start:
 ### Reset Button Modification
 The hardware as supplied doesnt include a reset button. When testing your own code it is much simpler to hit a reset button to start over rather than switching the power supply on and off.
 
-Other than a perhaps inadvertant software method of causing a reboot (see Other Registers), a hardware reset button can be easily integrated using a conveniently unpopulated footprint for an oscillator (on the 2501 at least, other models featuring ISDN may have this oscillator populated).
+Other than a perhaps inadvertant software method of causing a reboot (see [Other Registers](#other-registers)), a hardware reset button can be easily integrated using a conveniently unpopulated footprint for an oscillator (on the 2501 at least, other models featuring ISDN may have this oscillator populated).
 
 <img src="images/reset-button.png">
 
