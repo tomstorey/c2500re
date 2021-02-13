@@ -707,6 +707,8 @@ Other than a perhaps inadvertant software method of causing a reboot (see [Other
 ### FreeRTOS
 I have succeeded in getting FreeRTOS to run, and you can find a fork with my Motorola 68k port included here: [https://github.com/tomstorey/FreeRTOS-Kernel](https://github.com/tomstorey/FreeRTOS-Kernel)
 
+An example application to blink the OK LED is included in the `source/` directory of this repository. Instructions for getting that up and running are included in its directory.
+
 ### Parity Logic Test
 This is presumably a memory parity logic test, the name and general functionality of the routine seems to be quite suggestive of that anyway.
 
