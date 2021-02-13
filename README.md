@@ -38,6 +38,11 @@ I use the following conventions in my documentation:
   * w indicates that a register is writable, but the value read back may not represent what was written, or the register is write-once
   * -0 indicates the bit reads as 0 on reset, and -1 reads as a 1. -? means the bit value is indeterminate on reset (e.g. influenced externally).
 
+### Block Diagram
+Ive roughly figured out how everything interconnects, and produced a [block diagram](blob/master/block.pdf). It is not complete, missing some of the finer details like chip selects, read/write, clock, reset, and other signals. Use it as a guide only at this stage, I may get around to filling in the rest of the details over time.
+
+There are two "address busses" indicated from the CPU. PADDR (peripheral address) is a buffered "copy" of the CPUs address bus which seems to be routed primarily to the NVRAM, boot ROMs and UART. The other address bus is the native, unbuffered address bus of the CPU directly.
+
 ## Memories
 
 ### Boot ROMs
