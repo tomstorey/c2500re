@@ -3,6 +3,35 @@ Documented here is my effort to reverse engineer enough detail about the Cisco 2
 
 A particular goal was to get FreeRTOS running, which involved creating a new port.
 
+- [Cisco 2500 Series Reverse Engineering](#cisco-2500-series-reverse-engineering)
+    + [Rationale](#rationale)
+    + [Platform Brief](#platform-brief)
+    + [Conventions](#conventions)
+    + [Block Diagram](#block-diagram)
+  * [Memories](#memories)
+    + [Boot ROMs](#boot-roms)
+    + [NVRAM](#nvram)
+    + [DRAM](#dram)
+    + [Flash](#flash)
+  * [Peripherals](#peripherals)
+    + [Dual UART](#dual-uart)
+    + [Watchdog](#watchdog)
+    + [Hitachi HD64570 Serial Communications Adapter](#hitachi-hd64570-serial-communications-adapter)
+    + [NOVRAM](#novram)
+    + [LANCE Ethernet Controller](#lance-ethernet-controller)
+    + [GPIO](#gpio)
+    + [DMA](#dma)
+  * [Configuration and Control Registers](#configuration-and-control-registers)
+    + [System Control Register](#system-control-register)
+    + [Memory Configuration Register](#memory-configuration-register)
+    + [Peripheral Access Register](#peripheral-access-register)
+    + [Other Registers](#other-registers)
+  * [Other](#other)
+    + [Minimal Startup Code](#minimal-startup-code)
+    + [Reset Button Modification](#reset-button-modification)
+    + [FreeRTOS](#freertos)
+    + [Parity Logic Test](#parity-logic-test)
+
 ### Rationale
 These days, a Cisco 2500 doesnt make much of a router, at least not for modern broadband speeds. In terms of processing power it is somewhat limited also, at least compared to modern embedded systems.
 
@@ -632,6 +661,8 @@ There are potentially some other registers which were readable and others writab
 
 Writing word 0xFFFF to both 0x02110016 and 0x02110018 will cause a reset (CPU reset pin is asserted, so not a crash).
 
+## Other
+
 ### Minimal Startup Code
 The following represents the minimal code to get the system configured and able to function.
 
@@ -665,8 +696,6 @@ _start:
 
     jmp     main
 ```
-
-## Other
 
 ### Reset Button Modification
 The hardware as supplied doesnt include a reset button. When testing your own code it is much simpler to hit a reset button to start over rather than switching the power supply on and off.
