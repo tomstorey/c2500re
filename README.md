@@ -487,7 +487,7 @@ Bit 0: BEV: Bus Error Vector<br>
 
 The exact function of the BEV bit is unknown, but bus errors would ensue if this bit was not cleared.
 
-PTRA and PTEN relate to "parity logic" tests. Perhaps this is something to do with memory parity. More details to follow. TODO
+PTRA and PTEN relate to "parity logic" tests. Perhaps this is something to do with memory parity? [More details](#parity-logic-test).
 
 ### Memory Configuration Register
 This is a name I have come up with for this register, as its primary purpose seems to be to configure the valid address windows for DRAM and the boot ROMs.
@@ -677,3 +677,68 @@ Other than a perhaps inadvertant software method of causing a reboot (see [Other
 
 ### FreeRTOS
 I have succeeded in getting FreeRTOS to run, and you can find a fork with my Motorola 68k port included here: [https://github.com/tomstorey/FreeRTOS-Kernel](https://github.com/tomstorey/FreeRTOS-Kernel)
+
+### Parity Logic Test
+This is presumably a memory parity logic test, the name and general functionality of the routine seems to be quite suggestive of that anyway.
+
+The process is:
+
+1. A Bus Error exception will be generated during the test, so a temporary exception vector is loaded into address 0x000001E0 pointing to a simple routine that simply copies the result out of the control register into address 0x000001A0. Cisco's Bus Error exception ISR will read this location and branch to the value within if it is non-zero, so you'd need to implement your own similar means to achieve the same.
+2. Word 0x000001A0 is cleared
+3. PTEN bit of SCR is set
+4. Long 0x000001C8 is cleared
+5. PTEN bit is cleared
+6. PTRA bit of SCR is set
+7. Long 0x000001C8 is read. Bus error occurs here, branch to exception vector loaded in step 1:
+   1. Write 0x1 to 0x000001C8
+   2. Copy the SCR into 0x000001A0 and RTS back to bus error ISR, which RTE's
+8. Exception vector at 0x000001E0 is cleared
+9. Result stored in 0x000001A0 is ANDed with 0xC200, written back and re-read. If the final result is 0xC200 the test has passed.
+
+The PTRA bit is seemingly never cleared after this, so may have further functions beyond seemingly acquiring the test result.
+
+The address written to in step 4 does not seem to matter. E.g. writing to address 0x00000400 produces the same result.
+
+But the value written does appear to matter. E.g. writing 0x3 produces the same result. It seemed that writing a value with an even number of set bits seems to produce a result of 0xC200, while an odd number of bits will produce a value of 0x4200. Writing a value of 0xA2 still seemed to produce a result of 0xC200 though, so maybe it only works on the lower nibble?
+
+Perhaps it is simply best to follow the Cisco recipe for performing this test.
+
+Sample code to perform the above test:
+
+```
+    /* Set up temporary bus error handler */
+    move.l  parity_test_bus_error_handler, 0x000001E0
+
+    clr.w   0x000001A0              /* Where the result is stored */
+    ori.w   #0x4, 0x02110000        /* Set PTEN */
+    clr.l   0x000001C8              /* Write test value */
+    andi.w  #0xFFFB, 0x02110000     /* Clear PTEN */
+    ori.w   #0x8, 0x02110000        /* Set PTRA */
+    move.l  0x000001C8, %d0         /* Causes bus error exception */
+
+    /* Resume from here after handling bus error */
+    clr.l   0x000001E0              /* Remove temporary bus error handler */
+
+    move.w  0x000001A0, %d0         /* Mask test result */
+    andi.w  #0xC200, %d0
+
+    move.w  %d0, 0x000001A0         /* Store and read back */
+    move.w  0x000001A0, %d0
+
+    cmpi.w  #0xC200, %d0            /* Check result */
+    beq     parity_logic_test_ok
+
+    /* Parity test failed */
+    bra     .
+
+parity_logic_test_ok:
+    /* Continue with application */
+    ...
+
+parity_test_bus_error_handler:
+    moveq   #0x1, %d0               /* Write 1 into address 0x1C8 */
+    move.l  %d0, 0x000001C8
+    movea.l 0x02110000, %a0         /* Copy SCR into address 0x1A0 */
+    move.w  %a0@, 0x000001A0
+    rts                             /* JSR'd from bus error ISR, so RTS */
+```
