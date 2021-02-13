@@ -15,7 +15,7 @@ The Cisco 2501 which I used during this project has the following notable featur
 
 * Motorola 68EC030 CPU clocked at 20MHz
 * Philips SCN2681 dual UART (for the console and aux ports)
-* Hitachi HD46570 serial communications adapter (two serial WAN ports)
+* Hitachi HD64570 serial communications adapter (two serial WAN ports)
 * AMD AM79C90 ("LANCE") ethernet controller with AUI physical attachment
 * 72 pin SIMM slot accepting up to 16Mbyte of DRAM
 * 2x 80 pin SIMM slots accepting up to 8Mbyte of FLASH each
