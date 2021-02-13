@@ -770,4 +770,21 @@ parity_test_bus_error_handler:
     movea.l 0x02110000, %a0         /* Copy SCR into address 0x1A0 */
     move.w  %a0@, 0x000001A0
     rts                             /* JSR'd from bus error ISR, so RTS */
+
+BusError:
+    /* ISR to handle Bus Error exceptions */
+    tst.l   0x000001E0              /* Is a temp handler configured? */
+    beq     0f
+
+    /* A temporary bus error handler is configured, jump to it */
+    movea.l 0x000001E0, %a0
+    jsr     %a0@
+
+    bra     1f                      /* Finish up */
+
+0:
+    /* A temporary bus error handler is not configured */
+
+1:
+    rte
 ```
