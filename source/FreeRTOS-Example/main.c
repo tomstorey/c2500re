@@ -8,6 +8,7 @@
 #include "FreeRTOS-Kernel/include/timers.h"
 
 #define SCR (*(volatile uint16_t *)(0x02110000))
+#define ISR (*(volatile uint16_t *)(0x02110006))
 
 static TaskHandle_t task_handle = NULL;
 
@@ -19,13 +20,16 @@ IRQ4(void)
     /*
      * ISR for IRQ4 - tick timer
      */
+    uint16_t source = ISR;
 
-    /* Clear interrupt from HD64570 timer channel */
-    (void)TCSR0;
-    (void)TCNT0;
+    if ((source & 0x4) != 0) {
+        /* Clear interrupt from HD64570 timer channel */
+        (void)TCSR0;
+        (void)TCNT0;
 
-    /* Tick */
-    asm volatile("trap #14");
+        /* Tick */
+        asm volatile("trap #14");
+    }
 }
 
 void
