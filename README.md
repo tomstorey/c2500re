@@ -714,7 +714,6 @@ There are a number of different variations of ISR code, which appears to be for 
 There are potentially some other registers which were readable and others writable, but which I have not yet found any references to in the boot ROM disassembly, so their purpose and function is unknown:
 
 * 0x02110008: 2F02 in bootloader, FF28 when IOS is running
-* 0x0211000a: 0000 (read only)
 * 0x02110010: 0000 (writable)
 * 0x02110012: 0000 (writable)
 * 0x02110014: 0000 (writable)
