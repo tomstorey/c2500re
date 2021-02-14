@@ -25,6 +25,7 @@ A particular goal was to get FreeRTOS running, which involved creating a new por
     + [System Control Register](#system-control-register)
     + [Memory Configuration Register](#memory-configuration-register)
     + [Peripheral Access Register](#peripheral-access-register)
+    + [Interrupt Source Register](#interrupt-source-register)
     + [Other Registers](#other-registers)
   * [Other](#other)
     + [Minimal Startup Code](#minimal-startup-code)
@@ -107,14 +108,14 @@ No manufacturer part number is indicated on the packages, just a Cisco part numb
     </thead>
     <tbody>
         <tr>
-        	<td>8Mbit</td>
-        	<td>A19</td>
-        	<td>A18</td>
+            <td>8Mbit</td>
+            <td>A19</td>
+            <td>A18</td>
         </tr>
         <tr>
-        	<td>4Mbit</td>
-        	<td>A18</td>
-        	<td>WE/</td>
+            <td>4Mbit</td>
+            <td>A18</td>
+            <td>WE/</td>
         </tr>
     </tbody>
 </table>
@@ -174,40 +175,40 @@ A word size register was identified at address 0x0211000A which can be read to d
     </thead>
     <tbody>
         <tr>
-        	<td></td>
-        	<td></td>
-        	<td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td align="center">R-?</td>
             <td align="center">R-?</td>
-        	<td></td>
-        	<td></td>
+            <td></td>
+            <td></td>
             <td align="center">R-?</td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td>C0P6</td>
-        	<td>C1P6</td>
-        	<td></td>
-        	<td></td>
-        	<td>C0P4</td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>C0P6</td>
+            <td>C1P6</td>
+            <td></td>
+            <td></td>
+            <td>C0P4</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
     </tbody>
 </table>
@@ -331,7 +332,7 @@ Bit 15-0: WDTO: Watchdog timeout<br>
     </thead>
     <tbody>
         <tr>
-        	<td></td>
+            <td></td>
             <td align="center">R/W-0</td>
             <td></td>
             <td></td>
@@ -409,7 +410,7 @@ Within the NOVRAM, addresses 2-7 were identified to contain the MAC address of t
     </thead>
     <tbody>
         <tr>
-        	<td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -478,25 +479,25 @@ A notable feature is that it enables control of the "OK" LED which is located ne
     <tbody>
         <tr>
             <td align="center" colspan="8">R-?</td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td align="center">R/W-0</td>
-        	<td align="center">R/W-0</td>
-        	<td align="center">R/W-0</td>
-        	<td></td>
-        	<td align="center">R/W-1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="center">R/W-0</td>
+            <td align="center">R/W-0</td>
+            <td align="center">R/W-0</td>
+            <td></td>
+            <td align="center">R/W-1</td>
         </tr>
         <tr>
-        	<td align="center" colspan="8">Parity test result</td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td align="center">LED</td>
-        	<td align="center">PTRA</td>
-        	<td align="center">PTEN</td>
-        	<td></td>
-        	<td align="center">BEV</td>
+            <td align="center" colspan="8">Parity test result</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="center">LED</td>
+            <td align="center">PTRA</td>
+            <td align="center">PTEN</td>
+            <td></td>
+            <td align="center">BEV</td>
         </tr>
     </tbody>
 </table>
@@ -539,36 +540,36 @@ The ROMSZ field in one setting seems capable of supporting 1Mbit or 16Mbit ROMs 
     </thead>
     <tbody>
         <tr>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td align="center" colspan="2">R/W-0</td>
-        	<td align="center" colspan="2">R/W-0</td>
-        	<td></td>
-        	<td align="center">R/w-0</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="center" colspan="2">R/W-0</td>
+            <td align="center" colspan="2">R/W-0</td>
+            <td></td>
+            <td align="center">R/w-0</td>
         </tr>
         <tr>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td align="center" colspan="2">RAMSZ</td>
-        	<td align="center" colspan="2">ROMSZ</td>
-        	<td></td>
-        	<td align="center">?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="center" colspan="2">RAMSZ</td>
+            <td align="center" colspan="2">ROMSZ</td>
+            <td></td>
+            <td align="center">?</td>
         </tr>
     </tbody>
 </table>
@@ -605,30 +606,30 @@ The value written to this register did not seem to matter, I tried individual bi
     </thead>
     <tbody>
         <tr>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td align="center" colspan="6">R/W-0</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="center" colspan="6">R/W-0</td>
         </tr>
         <tr>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td></td>
-        	<td align="center" colspan="6">?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="center" colspan="6">?</td>
         </tr>
     </tbody>
 </table>
@@ -647,10 +648,71 @@ In the boot ROM disassembly, the following code is used to write to this registe
     andi.w  #0xFFC0, 0x02110004
 ```
 
+### Interrupt Source Register
+This word size register indicates the source of an interrupt. It is referenced in the ISRs for levels 3 and 4, and is used to determine if a peripheral has generated an interrupt and whether further processing of that interrupt should be performed.
+
+The register is read only, and it would seem that reading the register will clear any bits that have been set.
+
+**Interrupt Source Register 0x02110006**
+<table>
+    <thead>
+        <tr>
+            <th>Bit 15</th><th></th><th></th><th></th><th></th><th></th><th></th><th>8</th>
+            <th>7</th><th></th><th></th><th></th><th></th><th></th><th></th><th>Bit 0</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="center">R-0</td>
+            <td align="center">R-0</td>
+            <td align="center">R-0</td>
+            <td align="center">R-0</td>
+            <td align="center">R-0</td>
+            <td align="center">R-0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="center">?</td>
+            <td align="center">?</td>
+            <td align="center">?</td>
+            <td align="center">SER</td>
+            <td align="center">ETH</td>
+            <td align="center">?</td>
+        </tr>
+    </tbody>
+</table>
+
+Bits 2: SER: HD64570 serial communications adapter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;0: No interrupt<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1: Interrupt<br>
+Bits 1: ETH: LANCE ethernet controller<br>
+&nbsp;&nbsp;&nbsp;&nbsp;0: No interrupt<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1: Interrupt<br>
+
+There are a number of different variations of ISR code, which appears to be for different router models with different interface configurations. Each one is implemented discretely and tests slightly different bits to determine which interrupts to service, and the address of the appropriate ISR is loaded into a memory address which is then used to branch to the correct one. More bits within this register are referenced in these ISR combinations, but with only a 2501 to work from these are the only two bits I can positively identify at the moment.
+
 ### Other Registers
 There are potentially some other registers which were readable and others writable, but which I have not yet found any references to in the boot ROM disassembly, so their purpose and function is unknown:
 
-* 0x02110006: 0000 (read only)
 * 0x02110008: 2F02 in bootloader, FF28 when IOS is running
 * 0x0211000a: 0000 (read only)
 * 0x02110010: 0000 (writable)
