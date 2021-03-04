@@ -63,10 +63,10 @@ I use the following conventions in my documentation:
 
 * A forward slash (/) after a signal name indicates that the signal is active low, or negative logic
 * In register bit tables:
-* R indicates that a register is readable
-* W indicates that a register is writable, and will read back the same value written
-* w indicates that a register is writable, but the value read back may not represent what was written, or the register is write-once
-* -0 indicates the bit reads as 0 on reset, and -1 reads as a 1. -? means the bit value is indeterminate on reset (e.g. influenced externally).
+  * R indicates that a register is readable
+  * W indicates that a register is writable, and will read back the same value written
+  * w indicates that a register is writable, but the value read back may not represent what was written, or the register is write-once
+  * -0 indicates the bit reads as 0 on reset, and -1 reads as a 1. -? means the bit value is indeterminate on reset (e.g. influenced externally).
 
 ### Block Diagram
 Ive roughly figured out how everything interconnects, and produced a [block diagram](block.pdf). It is not complete, missing some of the finer details like chip selects, read/write, clock, reset, and other signals. Use it as a guide only at this stage, I may get around to filling in the rest of the details over time.
@@ -156,10 +156,92 @@ Two 80 pin SIMM sockets provide for 8Mbyte of flash each, totalling 16Mbyte of p
 
 Flash is located at address 0x03000000.
 
-Presence detect pins of the flash modules are partially used by one of the Cisco branded chips to enable each of the sockets:
+**Note:** Cisco flash modules do not follow the JEDEC standard pinout!
 
-* if PD6 of CODE0 is pulled low, address window 0x03000000-037FFFFF is enabled
-* if CODE0 is enabled, and PD6 of CODE1 is pulled low, address window 0x03800000-03FFFFFF is enabled
+**Flash Socket Pinout**
+<table>
+    <thead>
+        <tr>
+            <th>Pin</th><th>Signal</th><th>Pin</th><th>Signal</th>
+            <th>Pin</th><th>Signal</th><th>Pin</th><th>Signal</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td><td>GND</td><td>21</td><td>A6</td><td>41</td><td>A14</td><td>61</td><td>OE2/</td>
+        </tr>
+        <tr>
+            <td>2</td><td>+5V</td><td>22</td><td>A7</td><td>42</td><td>A15</td><td>62</td><td>GND</td>
+        </tr>
+        <tr>
+            <td>3</td><td></td><td>23</td><td>A8</td><td>43</td><td>GND</td><td>63</td><td>DQ24</td>
+        </tr>
+        <tr>
+            <td>4</td><td>A3</td><td>24</td><td>A9</td><td>44</td><td>DQ16</td><td>64</td><td>DQ25</td>
+        </tr>
+        <tr>
+            <td>5</td><td>A2</td><td>25</td><td>GND</td><td>45</td><td>DQ17</td><td>65</td><td>DQ26</td>
+        </tr>
+        <tr>
+            <td>6</td><td>A1</td><td>26</td><td>A10</td><td>46</td><td>DQ18</td><td>66</td><td>DQ27</td>
+        </tr>
+        <tr>
+            <td>7</td><td>A0</td><td>27</td><td>DQ15</td><td>47</td><td>DQ19</td><td>67</td><td>DQ28</td>
+        </tr>
+        <tr>
+            <td>8</td><td>DQ0</td><td>28</td><td>DQ14</td><td>48</td><td>DQ20</td><td>68</td><td>DQ29</td>
+        </tr>
+        <tr>
+            <td>9</td><td>DQ1</td><td>29</td><td>DQ13</td><td>49</td><td>DQ21</td><td>69</td><td>DQ30</td>
+        </tr>
+        <tr>
+            <td>10</td><td>DQ2</td><td>30</td><td>DQ12</td><td>50</td><td>DQ22</td><td>70</td><td>DQ31</td>
+        </tr>
+        <tr>
+            <td>11</td><td>DQ3</td><td>31</td><td>DQ11</td><td>51</td><td>DQ23</td><td>71</td><td></td>
+        </tr>
+        <tr>
+            <td>12</td><td>GND</td><td>32</td><td>DQ10</td><td>52</td><td></td><td>72</td><td>+5V</td>
+        </tr>
+        <tr>
+            <td>13</td><td>DQ4</td><td>33</td><td>DQ9</td><td>53</td><td>A16</td><td>73</td><td>A21</td>
+        </tr>
+        <tr>
+            <td>14</td><td>DQ5</td><td>34</td><td>DQ8</td><td>54</td><td>GND</td><td>74</td><td>A22</td>
+        </tr>
+        <tr>
+            <td>15</td><td>DQ6</td><td>35</td><td>CE/</td><td>55</td><td>A17</td><td>75</td><td>PD1</td>
+        </tr>
+        <tr>
+            <td>16</td><td>DQ7</td><td>36</td><td>+5V</td><td>56</td><td>A18</td><td>76</td><td>PD2</td>
+        </tr>
+        <tr>
+            <td>17</td><td>OE1/</td><td>37</td><td>PD5</td><td>57</td><td>A19</td><td>77</td><td>PD3</td>
+        </tr>
+        <tr>
+            <td>18</td><td>WE1/</td><td>38</td><td>A11</td><td>58</td><td>A20</td><td>78</td><td>PD</td>
+        </tr>
+        <tr>
+            <td>19</td><td>A4</td><td>39</td><td>A12</td><td>59</td><td></td><td>79</td><td>PD4</td>
+        </tr>
+        <tr>
+            <td>20</td><td>A5</td><td>40</td><td>A13</td><td>60</td><td>WE2/</td><td>80</td><td>GND</td>
+        </tr>
+    </tbody>
+</table>
+
+With only two sets of OE/ and WE/ pins, the flash modules are at best capable of word reads and writes. Pin set 1 corresponds to the lower word (byte 1 and 0) while pin set 2 corresponds to the upper word (byte 3 and 2).
+
+Ive numbered the address pins from A0 on the module, but A0 likely corresponds to A2 from the CPU, as my investigation shows that the flash module would only ever be addressed as a 32 bit wide device.
+
+There are 5 "adjustable" and one "permanent" presence detect pins per flash socket. Pin 78 (PD) should be permanently tied to ground and signals the presence of a module in a socket. Pins 75, 76, 77, 79 and 37 are the adjustable PD1 through PD5 pins respectively.
+
+Presence detect pins are only partially readable, and seem to be latched by one of the Cisco branded chips at boot. PD2 and PD5 can be read via the presence register for the CODE0 socket only, while the PD pin is available for both sockets.
+
+Pin 78 will enable the address window of a socket as follows:
+
+* if PD of CODE0 is pulled low, address window 0x03000000-037FFFFF is enabled
+* if CODE0 is enabled, and PD of CODE1 is pulled low, address window 0x03800000-03FFFFFF is enabled
 
 The CODE1 socket cannot be enabled if the CODE0 socket is not enabled. Attempting to read or write to an address in a window that is not enabled generates a bus error exception.
 
@@ -181,7 +263,7 @@ A word size register was identified at address 0x0211000A which can be read to d
             <td align="center">R-?</td>
             <td align="center">R-?</td>
             <td></td>
-            <td></td>
+            <td align="center">R-?</td>
             <td align="center">R-?</td>
             <td></td>
             <td></td>
@@ -196,11 +278,11 @@ A word size register was identified at address 0x0211000A which can be read to d
             <td></td>
             <td></td>
             <td></td>
-            <td>C0P6</td>
-            <td>C1P6</td>
+            <td>C0PD</td>
+            <td>C1PD</td>
             <td></td>
-            <td></td>
-            <td>C0P4</td>
+            <td>C0PD5</td>
+            <td>C0PD2</td>
             <td></td>
             <td></td>
             <td></td>
@@ -213,17 +295,20 @@ A word size register was identified at address 0x0211000A which can be read to d
     </tbody>
 </table>
 
-Bit 12: C0P6: CODE0 PD6<br>
-&nbsp;&nbsp;&nbsp;&nbsp;0: PD6 is grounded by flash module<br>
-&nbsp;&nbsp;&nbsp;&nbsp;1: PD6 is high - not connected or flash module not present<br>
-Bit 11: C1P6: CODE1 PD6<br>
-&nbsp;&nbsp;&nbsp;&nbsp;0: PD6 is grounded by flash module<br>
-&nbsp;&nbsp;&nbsp;&nbsp;1: PD6 is high - not connected or flash module not present<br>
-Bit 8: C0P4: CODE0 PD4<br>
-&nbsp;&nbsp;&nbsp;&nbsp;0: PD4 is grounded by flash module<br>
-&nbsp;&nbsp;&nbsp;&nbsp;1: PD4 is high - not connected or flash module not present
+Bit 12: C0PD: CODE0 PD<br>
+&nbsp;&nbsp;&nbsp;&nbsp;0: PD is grounded by flash module<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1: PD is high - not grounded or flash module not present<br>
+Bit 11: C1PD: CODE1 PD<br>
+&nbsp;&nbsp;&nbsp;&nbsp;0: PD is grounded by flash module<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1: PD is high - not grounded or flash module not present<br>
+Bit 9: C0PD5: CODE0 PD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;0: PD5 is grounded by flash module<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1: PD5 is high - not grounded or flash module not present<br>
+Bit 8: C0PD2: CODE0 PD2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;0: PD2 is grounded by flash module<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1: PD2 is high - not grounded or flash module not present
 
-Given the minimal number of PD bits available to read, it doesnt seem that enough information is present to determine the size or speed grades of the installed flash modules.
+Given the minimal number of PD bits available to read, it doesnt seem that enough information is present to determine the size or speed grades of the installed flash modules. No registers are known that might permit adjusting wait states for reads/writes.
 
 ## Peripherals
 
