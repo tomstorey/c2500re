@@ -1,14 +1,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "C2500.h"
 #include "HD64570.h"
 
 #include "FreeRTOS-Kernel/include/FreeRTOS.h"
 #include "FreeRTOS-Kernel/include/task.h"
 #include "FreeRTOS-Kernel/include/timers.h"
-
-#define SCR (*(volatile uint16_t *)(0x02110000))
-#define ISR (*(volatile uint16_t *)(0x02110006))
 
 static TaskHandle_t task_handle = NULL;
 
@@ -19,16 +17,22 @@ IRQ4(void)
 {
     /*
      * ISR for IRQ4 - tick timer
-     */
-    uint16_t source = ISR;
+     */ 
+    __INTSRCbits_t intsrc;
+    __ISR2bits_t isr2;
+    intsrc.u16 = INTSRC;
 
-    if ((source & 0x4) != 0) {
-        /* Clear interrupt from HD64570 timer channel */
-        (void)TCSR0;
-        (void)TCNT0;
+    if (intsrc.SER == 1) {
+        isr2.u8 = ISR2;
 
-        /* Tick */
-        asm volatile("trap #14");
+        if (isr2.T0IRQ == 1) {
+            /* Clear interrupt from HD64570 timer channel */
+            (void)TCSR0;
+            (void)TCNT0;
+
+            /* Tick */
+            asm volatile("trap #14");
+        }
     }
 }
 
@@ -61,7 +65,7 @@ task(void *param)
 {
     while (true) {
         /* Blink the OK LED at 1hz */
-        SCR ^= 0x10;
+        SYSCONbits.LED ^= 1;
 
         vTaskDelay(50);
     }
