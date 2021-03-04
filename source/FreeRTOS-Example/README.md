@@ -20,7 +20,9 @@ From here you should be able to run the following commands to build a ROM image:
 `make crt`
 `make && make rom`
 
-This results in a file called `bmbinary.rom` which must be split as odd (FW1) and even (FW2) bytes between two physical ROMs. This can often be done in the software for your favourite programmer, or you can use the included `roms.py` script to do this for you (requires Python 3). Simply call the script using the following command:
+This results in a file called `bmbinary.rom` which must be split as odd (FW1) and even (FW2) bytes between two physical ROMs. This can often be done in the software for your favourite programmer, or you can use the included `roms.py` script to do this for you (requires Python 3).
+
+By default, `roms.py` is called via the `make rom` command, but you can remove this from the Makefile and call it manually if desired:
 
 `python3 roms.py`
 
