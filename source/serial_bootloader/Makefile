@@ -14,7 +14,7 @@
 # The compiler will automatically choose the correct source file (.c, .s etc)
 # according to the object file (.o) to be created.
 
-CPU=m68030
+CPU=68030
 
 PREFIX=m68k-unknown-elf
 
@@ -28,21 +28,21 @@ LD=$(PREFIX)-ld
 OBJCOPY=$(PREFIX)-objcopy
 OBJDUMP=$(PREFIX)-objdump
 
-CFLAGS=-$(CPU) -Wall -g -static -I. -I./include -msoft-float -MMD -MP -O1
+CFLAGS=-m$(CPU) -Wall -g -static -I. -I./include -msoft-float -MMD -MP -O1
 LFLAGS=--script=platform.ld
-AFLAGS=-$(CPU) -Wall -c -g
+AFLAGS=-m$(CPU) -Wall -c -g
 
 SRC=$(wildcard *.c)
 DEP=$(SRC:%.c=%.d)
 
 %/%.o: %.c
-	$(CC) $(CFLAGS) -$(CPU) -c -o $@ $<
+	$(CC) $(CFLAGS) -m$(CPU) -c -o $@ $<
 
 %/%.o: %.S
-	$(CC) $(CFLAGS) -$(CPU) -c $<
+	$(CC) $(CFLAGS) -m$(CPU) -c $<
 
 %/%.o: %.s
-	$(CC) $(CFLAGS) -$(CPU) -c $<
+	$(CC) $(CFLAGS) -m$(CPU) -c $<
 
 bmbinary: $(OBJ)
 	$(LD) -o $@ $(OBJ) $(LFLAGS)
