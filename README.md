@@ -124,7 +124,11 @@ Given these apparent differences, I can foresee a couple of different scenarios 
 
 * pin compatible ROMs need to be found
 * a large enough ROM image may need to be suitably rearranged to compensate for the differences in address lines
-* ROM image may need to be limited to 1Mbit (128K) per ROM, or 2Mbit (256K) total
+  * If I can count, two 2Mbit slices could potentially be utilised in a 4Mbit ROM to make full use of it, hypothetically speaking:
+    * CPU 0x0-3FFFF/ROM 0x0-3FFFF - when CPU A19/ROM A18 is low
+    * CPU 0x80000-BFFFF/ROM 0x40000-7FFFF when CPU A19/ROM A18 is high
+  * An appropriate linker script, and another small script to rearrange a resulting binary would be required
+* ROM image may need to be limited to 2Mbit (256K) per ROM, or 4Mbit (512K) total
 * figure out how to store code in flash, and use the ROM sockets only for bootloading
 
 *See [Memory Configuration Register](#memory-configuration-register) section for details about configuring the valid address window for the boot ROM sockets.*
