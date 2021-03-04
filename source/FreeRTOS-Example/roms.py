@@ -1,12 +1,19 @@
+# Uncomment one of the following lines to produce ROM images of the correct
+# size to suit your EEPROMs
+# ROMSZ = 524288      # 4Mbit ROMs
+# ROMSZ = 262144      # 2Mbit ROMs
+ROMSZ = 131072      # 1Mbit ROMs
+
 def main():
     rom = []
     fw1 = []
     fw2 = []
 
+    # Read in the source binary
     with open('bmbinary.rom', 'r+b') as file:
-        rom = file.read(0x100000)
+        rom = file.read(ROMSZ * 2)
 
-    # Produce Odd and Even ROMs
+    # Split into odd and even ROMs, and reverse the bit order of each byte
     for idx, data in enumerate(rom):
         if (idx & 0x1) == 0:
             # Even ROM data
@@ -15,8 +22,9 @@ def main():
             # Odd ROM data
             fw1.append(reverse_byte(data))
 
-    fw1 += [0xFF] * (524288 - len(fw1))
-    fw2 += [0xFF] * (524288 - len(fw2))
+    # Pad the two ROM images to fill unused space
+    fw1 += [0xFF] * (ROMSZ - len(fw1))
+    fw2 += [0xFF] * (ROMSZ - len(fw2))
 
     # Write Odd ROM file
     with open('fw1', 'w+b') as file:
@@ -28,6 +36,8 @@ def main():
 
 
 def reverse_byte(b):
+    """ Reverse the contents of a byte
+    """
     b &= 0xFF
 
     if b == 0 or b == 0xFF:
