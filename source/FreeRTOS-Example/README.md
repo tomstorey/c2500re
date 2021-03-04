@@ -17,8 +17,10 @@ Then, move the included `FreeRTOSConfig.h` into `FreeRTOS-Kernel/include`.
 ### Build the source
 From here you should be able to run the following commands to build a ROM image:
 
-`make crt`
-`make && make rom`
+```
+make crt
+make && make rom
+```
 
 This results in a file called `bmbinary.rom` which must be split as odd (FW1) and even (FW2) bytes between two physical ROMs. This can often be done in the software for your favourite programmer, or you can use the included `roms.py` script to do this for you (requires Python 3).
 
