@@ -1,0 +1,33 @@
+#ifndef SCN2681_H
+#define	SCN2681_H
+
+#define MR1A (*(volatile uint8_t *)(0x02120100))
+#define MR2A (*(volatile uint8_t *)(0x02120100))
+#define SRA (*(volatile uint8_t *)(0x02120101))
+#define CSRA (*(volatile uint8_t *)(0x02120101))
+#define CRA (*(volatile uint8_t *)(0x02120102))
+#define RHRA (*(volatile uint8_t *)(0x02120103))
+#define THRA (*(volatile uint8_t *)(0x02120103))
+#define IPCR (*(volatile uint8_t *)(0x02120104))
+#define ACR (*(volatile uint8_t *)(0x02120104))
+#define ISR (*(volatile uint8_t *)(0x02120105))
+#define IMR (*(volatile uint8_t *)(0x02120105))
+#define CTU (*(volatile uint8_t *)(0x02120106))
+#define CTUR (*(volatile uint8_t *)(0x02120106))
+#define CTL (*(volatile uint8_t *)(0x02120107))
+#define CTLR (*(volatile uint8_t *)(0x02120107))
+#define MR1B (*(volatile uint8_t *)(0x02120108))
+#define MR2B (*(volatile uint8_t *)(0x02120108))
+#define SRB (*(volatile uint8_t *)(0x02120109))
+#define CSRB (*(volatile uint8_t *)(0x02120109))
+#define CRB (*(volatile uint8_t *)(0x0212010A))
+#define RHRB (*(volatile uint8_t *)(0x0212010B))
+#define THRB (*(volatile uint8_t *)(0x0212010B))
+#define INPORT (*(volatile uint8_t *)(0x0212010D))
+#define OPCR (*(volatile uint8_t *)(0x0212010D))
+#define STARTC (*(volatile uint8_t *)(0x0212010E))
+#define SOPB (*(volatile uint8_t *)(0x0212010E))
+#define STOPC (*(volatile uint8_t *)(0x0212010F))
+#define ROPB (*(volatile uint8_t *)(0x0212010F))
+
+#endif	/* SCN2681_H */
