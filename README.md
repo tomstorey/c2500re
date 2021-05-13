@@ -32,6 +32,7 @@ A particular goal was to get FreeRTOS running, which involved creating a new por
     + [Reset Button Modification](#reset-button-modification)
     + [FreeRTOS](#freertos)
     + [Parity Logic Test](#parity-logic-test)
+    + [Flash IO Board](#flash-io-board)
 
 ### Rationale
 These days, a Cisco 2500 doesnt make much of a router, at least not for modern broadband speeds. In terms of processing power it is somewhat limited also, at least compared to modern embedded systems.
@@ -540,7 +541,7 @@ TODO, but seems to be located at address 0x2130000.
 ### GPIO
 Since this system was designed for a specific purpose, beyond an LED which is controllable by writing to a register (see [System Control Register](#system-control-register)) there is no other GPIO capability built in.
 
-Having said that, I have an idea that it may be possible to design an small PCB to break out parts of the address and data busses via one of the flash sockets. This would provide an ability to read and write some latches or other simple peripherals. However, given that this is a memory socket, no access to other bus signals is possible, and it would not be possible to provide interrupts, so usefulness is limited to simple IO.
+Having said that, I have designed a board which can be inserted into one of the flash sockets to provide some buttons, switches, and displays for some basic IO. Refer to the [Flash IO Board](#flash-io-board) section for further details.
 
 ### DMA
 No general purpose DMA controllers have yet been identified, but given the high level of integration in the Cisco branded chips, I would not be surprised if something exists, and it would be really nice to find at least one. TODO
@@ -940,3 +941,26 @@ BusError:
 1:
     rte
 ```
+
+### Flash IO Board
+Since the router has extremely limited expansion capabilities, the best method I could think of for getting some GPIO was to utilise one of the flash sockets to provide some kind of means to enable external devices to be attached to the router.
+
+The only downside to this is that you miss a lot of signals that you might otherwise have access to in an expansion slot, like interrupt and reset signals. As a memory socket, you basically only have access to a chunk of the address bus, the data lines and some chip selects.
+
+The board I have designed uses a couple of transparent latches which can be accessed via a memory read, and some TIL311/DIS1417 displays which can be written to. You can extend the basic principal to provide a software controllable reset circuit, and also a pollable interrupt signal from some peripherals.
+
+Certainly in retrospect, the [1600R](https://github.com/tomstorey/c1600re) presents a much more expandable platform having a WIC slot with all of the kinds of signals you would expect in an expansion slot (including interrupt and reset).
+
+Nevertheless, this board is made available for you to build if you so desire. It is, unfortunately, not a cheap board due to the fact it is a 1.2mm 4 layer board. Had I tried a bit harder I might have got it to 2 layers. An EAGLE library is included with a footprint for the flash socket that follows the non-standard Cisco pinout should you wish to design your own boards.
+
+<img src="images/io-board.jpg">
+
+When ordering, specifications of the board should be:
+
+* PCB thickness: 1.2mm
+* Dimension: 62x118mm
+* Layers: 4, 1oz copper
+* Material: FR4
+* Colour: whatever you want
+
+Also unfortunately, yes it is almost exclusively surface mount. This was as much of an experiment in surface mount soldering with my new hot air station as it was an experiment in using the flash sockets for IO.
