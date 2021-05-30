@@ -179,7 +179,7 @@ Flash is located at address 0x03000000.
             <td>2</td><td>+5V</td><td>22</td><td>A7</td><td>42</td><td>A15</td><td>62</td><td>GND</td>
         </tr>
         <tr>
-            <td>3</td><td></td><td>23</td><td>A8</td><td>43</td><td>GND</td><td>63</td><td>DQ24</td>
+            <td>3</td><td>VPP</td><td>23</td><td>A8</td><td>43</td><td>GND</td><td>63</td><td>DQ24</td>
         </tr>
         <tr>
             <td>4</td><td>A3</td><td>24</td><td>A9</td><td>44</td><td>DQ16</td><td>64</td><td>DQ25</td>
@@ -203,7 +203,7 @@ Flash is located at address 0x03000000.
             <td>10</td><td>DQ2</td><td>30</td><td>DQ12</td><td>50</td><td>DQ22</td><td>70</td><td>DQ31</td>
         </tr>
         <tr>
-            <td>11</td><td>DQ3</td><td>31</td><td>DQ11</td><td>51</td><td>DQ23</td><td>71</td><td></td>
+            <td>11</td><td>DQ3</td><td>31</td><td>DQ11</td><td>51</td><td>DQ23</td><td>71</td><td>VPP</td>
         </tr>
         <tr>
             <td>12</td><td>GND</td><td>32</td><td>DQ10</td><td>52</td><td></td><td>72</td><td>+5V</td>
@@ -638,7 +638,7 @@ The ROMSZ field in one setting seems capable of supporting 1Mbit or 16Mbit ROMs 
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
+            <td align="center">R/W-0</td>
             <td></td>
             <td align="center" colspan="2">R/W-0</td>
             <td align="center" colspan="2">R/W-0</td>
@@ -654,7 +654,7 @@ The ROMSZ field in one setting seems capable of supporting 1Mbit or 16Mbit ROMs 
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
+            <td align="center">VPPEN</td>
             <td></td>
             <td align="center" colspan="2">RAMSZ</td>
             <td align="center" colspan="2">ROMSZ</td>
@@ -664,6 +664,9 @@ The ROMSZ field in one setting seems capable of supporting 1Mbit or 16Mbit ROMs 
     </tbody>
 </table>
 
+Bit 7: VPPEN: Flash socket VPP control
+&nbsp;&nbsp;&nbsp;&nbsp;0: Disabled
+&nbsp;&nbsp;&nbsp;&nbsp;1: Enabled (+12V)
 Bits 5-4: RAMSZ: RAM size<br>
 &nbsp;&nbsp;&nbsp;&nbsp;00: 16MB - valid address range 0x00000000-00FFFFFF<br>
 &nbsp;&nbsp;&nbsp;&nbsp;01: 4MB - valid address range 0x00000000-003FFFFF<br>
