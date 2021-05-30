@@ -664,7 +664,7 @@ The ROMSZ field in one setting seems capable of supporting 1Mbit or 16Mbit ROMs 
     </tbody>
 </table>
 
-Bit 7: VPPEN: Flash socket VPP control
+Bit 7: VPPEN: Flash socket VPP control<br>
 &nbsp;&nbsp;&nbsp;&nbsp;0: Disabled
 &nbsp;&nbsp;&nbsp;&nbsp;1: Enabled (+12V)
 Bits 5-4: RAMSZ: RAM size<br>
