@@ -665,8 +665,8 @@ The ROMSZ field in one setting seems capable of supporting 1Mbit or 16Mbit ROMs 
 </table>
 
 Bit 7: VPPEN: Flash socket VPP control<br>
-&nbsp;&nbsp;&nbsp;&nbsp;0: Disabled
-&nbsp;&nbsp;&nbsp;&nbsp;1: Enabled (+12V)
+&nbsp;&nbsp;&nbsp;&nbsp;0: Disabled<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1: Enabled (+12V)<br>
 Bits 5-4: RAMSZ: RAM size<br>
 &nbsp;&nbsp;&nbsp;&nbsp;00: 16MB - valid address range 0x00000000-00FFFFFF<br>
 &nbsp;&nbsp;&nbsp;&nbsp;01: 4MB - valid address range 0x00000000-003FFFFF<br>
