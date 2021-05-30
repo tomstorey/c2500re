@@ -1,6 +1,7 @@
 #ifndef C2500_H
 #define C2500_H
 
+#ifndef __ASSEMBLER__
 #include <stdint.h>
 
 #define SYSCON (*(volatile uint16_t *)(0x02110000))
@@ -23,7 +24,9 @@ typedef union {
 #define MEMCON (*(volatile uint16_t *)(0x02110002))
 typedef union {
     struct {
-        uint16_t :10;
+        uint16_t :8;
+        uint16_t VPPEN:1;
+        uint16_t :1;
         uint16_t RAMSZ1:1;
         uint16_t RAMSZ0:1;
         uint16_t ROMSZ1:1;
@@ -124,5 +127,19 @@ typedef union {
 
 #define WDTO (*(volatile uint16_t *)(0x02120050))
 #define TIMERPS (*(volatile uint16_t *)(0x02120070))
+
+#else /* __ASSEMBLER__ */
+
+#define SYSCON 0x02110000
+#define MEMCON 0x02110002
+#define PERIPHACC 0x02110004
+#define INTSRC 0x02110006
+#define FLASHPD 0x0211000A
+#define NOVRAM 0x02110060
+#define WDTCON 0x02120040
+#define WDTO 0x02120050
+#define TIMERPS 0x02120070
+
+#endif /* __ASSEMBLER__ */
 
 #endif /* C2500_H */
