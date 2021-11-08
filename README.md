@@ -33,6 +33,7 @@ A particular goal was to get FreeRTOS running, which involved creating a new por
     + [FreeRTOS](#freertos)
     + [Parity Logic Test](#parity-logic-test)
     + [Flash IO Board](#flash-io-board)
+    + [Aux port higher baud rate](#aux-port-higher-baud-rate)
 
 ### Rationale
 These days, a Cisco 2500 doesnt make much of a router, at least not for modern broadband speeds. In terms of processing power it is somewhat limited also, at least compared to modern embedded systems.
@@ -324,20 +325,18 @@ The UART is located at address 0x02120100. It can generate interrupts at IRQ 5. 
 
 16 registers are either readable or writable from this address as per the datasheet.
 
-A 3.6864MHz external oscillator is used to derive all of the common baud rates. In timer mode I have been able to configure a baud rate of 57600, but the datasheet seems to indicate that 115200 should also be possible.
+A 3.6864MHz external oscillator is used to derive all of the common baud rates. In timer mode it is possible to generate a baud rate of 57600 on both channels. Faster baud rates are possible only on the Aux port, see [Aux port higher baud rate](#aux-port-higher-baud-rate) for details.
 
 Below is a simple assembly routine to configure the Console port for 9600,8,N,1:
 
 ```
-    clr.b   0x02120105
-    move.b  #0x10, 0x02120102
-    move.b  #0x13, 0x02120100
-    move.b  #0x7, 0x02120100
-    move.b  #0xE0, 0x02120104
-    move.b  #0xBB, 0x02120101
-    move.b  #0x5, 0x02120102
-    clr.b   0x0212010D
-    move.b  #0x1, 0x0212010E
+    clr.b   (0x02120105)            /* Disable all interrupts */
+    move.b  #0x10, (0x02120102)     /* Reset command reg pointer */
+    move.b  #0x13, (0x02120100)     /* No parity, 8 bits per char */
+    move.b  #0x7, (0x02120100)      /* 1 stop bit */
+    move.b  #0xE0, (0x02120104)     /* BRG set 2, external clock */
+    move.b  #0xBB, (0x02120101)     /* 9600 baud */
+    move.b  #0x5, (0x02120102)      /* Enable transmitter and receiver */
 ```
 
 Data can then be written to the transmit holding register or read from the receive holding register, both located at address 0x02120103.
@@ -967,3 +966,25 @@ When ordering, specifications of the board should be:
 * Colour: whatever you want
 
 Also unfortunately, yes it is almost exclusively surface mount. This was as much of an experiment in surface mount soldering with my new hot air station as it was an experiment in using the flash sockets for IO.
+
+### Aux port higher baud rate
+The maximum configurable baud rate for both the Console and Aux ports, in timer mode, is 57600. This is because the input clock of 3.6864MHz is divided by 32 before being fed into the timer module, and the minimum count that may be loaded into the timer is 2. Therefore 3686400 / 32 / 2 = 57600.
+
+The SCN2681 can accept a clock signal on IP3 and IP4 (RX and TX for Ch A/Console respectively) and IP5 and IP6 (RX and TX for Ch B/Aux respectively) for baud rate generation. Unfortunately, in the design of the 2500, Cisco has used IP4 for a control signal on the ports. However, both IP5 and IP6 do not seem to have been used for any control signals, so it is possible to connect both of those pins via some test pads on the underside of the board to the output of the adjacent oscillator with a small bodge.
+
+In this configuration, a baud rate of 230400 is possible on the Aux port when the channel is configured in 16X mode, and a rather blazing 3.6864Mbit in 1X mode (however, this is beyond the maximum specification of 1Mbit quoted in the datasheet).
+
+<img src="images/uart-clock.jpg">
+
+Below is an assembly example of how to configure the Aux port for a baud of 230400.
+
+```
+    clr.b   (0x02120105)            /* Disable all interrupts */
+    move.b  #0x10, (0x0212010A)     /* Reset command reg pointer */
+    move.b  #0x13, (0x02120108)     /* No parity, 8 bits per char */
+    move.b  #0x7, (0x02120108)      /* 1 stop bit */
+    move.b  #0xEE, (0x02120109)     /* RX/TX clock from IP5/IP6 in 16X mode */
+    move.b  #0x5, (0x0212010A)      /* Enable transmitter and receiver */
+```
+
+At this time, I still havent found a way to generate a baud of 115200.
