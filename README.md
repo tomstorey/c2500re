@@ -721,6 +721,8 @@ Bits 3-2: ROMSZ: ROM size<br>
 Bit 0: Unknown purpose<br>
 &nbsp;&nbsp;&nbsp;&nbsp;This bit is set in the boot ROM code, but always reads as zero and doesn't seem to matter if it is set or not.
 
+Setting the RAMSZ value affects the location and size of the "IO memory region". Refer to [IO Memory](#io-memory) for details.
+
 ### Peripheral Access Register
 Another name that I have come up with based on its apparent usage, the exact purpose of this register is still somewhat unknown. In the disassembly I see that it is written to with a value of 0x3F, followed by a small delay, and then cleared.
 
