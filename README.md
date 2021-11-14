@@ -12,6 +12,7 @@ A particular goal was to get FreeRTOS running, which involved creating a new por
     + [Boot ROMs](#boot-roms)
     + [NVRAM](#nvram)
     + [DRAM](#dram)
+	    + [IO Memory](#io-memory)
     + [Flash](#flash)
   * [Peripherals](#peripherals)
     + [Dual UART](#dual-uart)
@@ -48,7 +49,7 @@ The Cisco 2501 which I used during this project has the following notable featur
 * Motorola 68EC030 CPU clocked at 20MHz
 * Philips SCN2681 dual UART (for the console and aux ports)
 * Hitachi HD64570 serial communications adapter (two serial WAN ports)
-* AMD AM79C90 ("LANCE") ethernet controller with AUI physical attachment
+* AMD Am79C90 ("LANCE") ethernet controller with AUI physical attachment
 * 72 pin SIMM slot accepting up to 16Mbyte of DRAM
 * 2x 80 pin SIMM slots accepting up to 8Mbyte of FLASH each
 * 2x 32 pin PLCC sockets for boot ROMs
@@ -156,6 +157,37 @@ Although the boot ROMs are seemingly mapped to address 0 while the CPU reads the
 Presence detect pins of the DRAM socket do not seem to be routed to either of the Cisco branded chips. A software memory sizing routine is implemented to find the size of available DRAM.
 
 *See [Memory Configuration Register](#memory-configuration-register) section for details about configuring the valid address window for the DRAM.*
+
+#### IO Memory
+An upper portion of the installed DRAM will be allocated to IO memory. The CPU is able to access the entire memory space, but the DMA controllers of the LANCE and HD64570 are only able to access the IO memory area.
+
+Depending on the size of the RAM configured in the Memory Configuration Register, the size and location of the IO memory region will vary according to the following table:
+
+<table>
+    <thead>
+        <tr>
+            <th>Memory Size</th><th>IOMEM Size</th><th>IOMEM Region</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2MB</td><td>1MB</td><td>0x100000-1FFFFF</td>
+        </tr>
+        <tr>
+            <td>4MB</td><td>2MB</td><td>0x200000-3FFFFF</td>
+        </tr>
+        <tr>
+            <td>8MB</td><td>2MB</td><td>0x600000-7FFFFF</td>
+        </tr>
+        <tr>
+            <td>16MB</td><td>2MB</td><td>0xE00000-FFFFFF</td>
+        </tr>
+    </tbody>
+</table>
+
+4, 8 and 16MB are all confirmed according to my own experimentation or information provided by others. 2MB is unconfirmed, but seems likely according to boot ROM disassembly.
+
+Initialisation structures, tx/rx ring descriptors, and packet buffers for the LANCE and HD64570 must be allocated within the IO memory region or those devices will be unable to access that data.
 
 ### Flash
 Two 80 pin SIMM sockets provide for 8Mbyte of flash each, totalling 16Mbyte of persistent storage.
@@ -475,6 +507,8 @@ Although the HD64570 includes an ability to provide an interrupt vector, the INT
 
 The HD64570 includes 4 timer channels which can be used to generate interrupts to the CPU. A unique advantage of these timer channels being at IRQ 4 is that they can be masked, which means they may be used to generate, for example, a tick interrupt for FreeRTOS.
 
+While the timer channels can be initialised and used simply by reading and writing to the HD64570 registers, special attention is required if you intend to use the serial channels. Refer to [IO Memory](#io-memory) for some details.
+
 The input clock frequency to the HD64570 is 10MHz, and this is divided by 8 internally to produce the Base Clock for the timer channels, giving them an input frequency of 1.25MHz. Therefore, a prescaler of 5000 would produce a 4ms interval.
 
 The datasheet contains extensive notes and details about the configuration and operation of these timers.
@@ -535,7 +569,15 @@ Bit 0: DI: Data In<br>
 &nbsp;&nbsp;&nbsp;&nbsp;1: Reading a one
 
 ### LANCE Ethernet Controller
-TODO, but seems to be located at address 0x2130000.
+An AMD Am79C90 ethernet controller (also known as a LANCE) is located at address 0x2130000. It generates interrupts at IRQ4. It is unknown whether the IRQ level can be changed.
+
+The datasheet contains everything you need to know about configuring and operating the controller.
+
+A special caveat to be aware of is the concept of "IO memory". The LANCE is only able to access a maximum of 2MB of the installed RAM, and this is usually the upper portion of the RAM. Refer to [IO Memory](#io-memory) for details of where you will need to allocate space for the Initialisation Block, tx/rx ring descriptors, and packet buffers.
+
+Ive "succeeded" in making a zero copy FreeRTOS+TCP port that can initialise the LANCE ethernet controller, and can successfully transmit and receive packets. Ive tested it with a ping flood of a few hundred pps and experienced no major problems, however, I seem to have run into another issue causing crashes or freezes and havent quite figured out how to resolve that yet.
+
+See more details in [FreeRTOS](#freertos).
 
 ### GPIO
 Since this system was designed for a specific purpose, beyond an LED which is controllable by writing to a register (see [System Control Register](#system-control-register)) there is no other GPIO capability built in.
@@ -861,6 +903,10 @@ Other than a perhaps inadvertant software method of causing a reboot (see [Other
 I have succeeded in getting FreeRTOS to run, and you can find a fork with my Motorola 68k port included here: [https://github.com/tomstorey/FreeRTOS-Kernel](https://github.com/tomstorey/FreeRTOS-Kernel)
 
 An example application to blink the OK LED is included in the `source/` directory of this repository. Instructions for getting that up and running are included in its directory.
+
+Ive also succeeded in building a mostly functional port of FreeRTOS+TCP, however, Ive run into some issues where after a short while of hammering a few hundred pps at the device, it seems to be getting hung up and the CPU stops executing instructions. Initial investigations seem to point to one of the Cisco proprietary chips getting hung up and completely stalling bus activity.
+
+Source code for the FreeRTOS+TCP port and higher level project can be found in this repo: [https://github.com/tomstorey/c2500_freertos_tcp](https://github.com/tomstorey/c2500_freertos_tcp). But after spending roughly a week trying to diagnose the exact cause and solution to the freezing issues, Ive decided to move onto another project. I may come back to this at some point in the future and see if I can figure out what is going on.
 
 ### Parity Logic Test
 This is presumably a memory parity logic test, the name and general functionality of the routine seems to be quite suggestive of that anyway.
